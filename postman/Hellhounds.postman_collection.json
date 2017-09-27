@@ -1,0 +1,45 @@
+{
+	"variables": [],
+	"info": {
+		"name": "Hellhounds",
+		"_postman_id": "dfeb626e-b2c2-be6c-e1ee-4a791ed1e3cd",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Settings Refrigerador",
+			"request": {
+				"url": "http://localhost:3000/refrigerator/index",
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"controlador_id\" : \"1\",\n\t\"temperatura\" : 24,5\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Status Refrigerador",
+			"request": {
+				"url": "http://localhost:3000/arduino/status",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"id\" : \"hellhounds02\",\n\t\"sensors\" : [\n\t\t{ \"id\": \"sensor01\", \"target_temperature\": 7, \"current_temperature\": 10},\n\t\t{ \"id\": \"sensor02\", \"target_temperature\": 6, \"current_temperature\": 10 }\n\t]\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		}
+	]
+}

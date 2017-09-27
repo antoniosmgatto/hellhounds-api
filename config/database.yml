@@ -1,0 +1,21 @@
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  host: db
+  username: postgres
+  password: root
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+
+development:
+  <<: *default
+  database: hellhounds_development
+
+test:
+  <<: *default
+  database: hellhounds_test
+
+production:
+  <<: *default
+  database: hellhounds_production
+  username: hellhounds
+  password: <%= ENV['HELLHOUNDS_DATABASE_PASSWORD'] %>

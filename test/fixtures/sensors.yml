@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  arduino_id: MyText
+  sensor_id: MyText
+  target_temperature: 1
+  current_temperature: 1
+
+two:
+  arduino_id: MyText
+  sensor_id: MyText
+  target_temperature: 1
+  current_temperature: 1
