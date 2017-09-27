@@ -2,6 +2,8 @@ class ArduinoController < ApplicationController
 
   def status
 
+    Rails.logger.debug params
+
     sensors = []
 
     params[:sensors].each do | sensor_param |
@@ -19,6 +21,8 @@ class ArduinoController < ApplicationController
         :updatedAt => Firebase::ServerValue::TIMESTAMP
       }
       base_uri = Rails.application.secrets.FIREBASE_URL
+
+      Rails.logger.debug "url #{base_uri}"
       firebase = Firebase::Client.new(base_uri)
       response = firebase.set("sensors/#{sensor.sensor_id}", payload)
 
