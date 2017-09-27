@@ -11,6 +11,8 @@ services:
       - ~/.gitconfig:/home/developer/.gitconfig
     ports:
       - "3000:3000"
+    environment:
+      - HELLHOUNDS_FIREBASE_URL
     depends_on:
       - db
   db:
