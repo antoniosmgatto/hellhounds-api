@@ -3,39 +3,33 @@ class ArduinoController < ApplicationController
   def status
 
     sensors = []
-
-    sensor1 = Sensor.new
-    sensor1.arduino_id = params[:id]
-    sensor1.sensor_id = params[:sensor_01_id]
-    sensor1.target_temperature = params[:sensor_01_target_temperature]
-    sensor1.current_temperature = params[:sensor_01_current_temperature]
-    sensors << sensor1
-
-    sensor2 = Sensor.new
-    sensor2.arduino_id = params[:id]
-    sensor2.sensor_id = params[:sensor_02_id]
-    sensor2.target_temperature = params[:sensor_02_target_temperature]
-    sensor2.current_temperature = params[:sensor_02_current_temperature]
-    sensors << sensor2
-
-    sensors.each do | sensor |
-      payload = {
-        :id => sensor.sensor_id,
-        :arduino => sensor.arduino_id,
-        :currentTemperature => sensor.current_temperature,
-        :targetTemperature => sensor.target_temperature,
-        :updatedAt => Firebase::ServerValue::TIMESTAMP
-      }
-      base_uri = Rails.application.secrets.FIREBASE_URL
-
-      firebase = Firebase::Client.new(base_uri)
-      response = firebase.set("sensors/#{sensor.sensor_id}", payload)
+    params[:sensors].each do | sensor_param |
+      sensor = Sensor.new
+      sensor.arduino_id = params[:id]
+      sensor.sensor_id = sensor_param[:id]
+      sensor.target_temperature = sensor_param[:target_temperature]
+      sensor.current_temperature = sensor_param[:current_temperature]
+      sensors << sensor
     end
-
-    Sensor.transaction do
-      sensors.each(&:save)
-    end
-
+    save_status(sensors)
     render status: :ok
   end
+
+  private
+    def save_status(sensors)
+      sensors.each do |sensor|
+        payload = {
+          :id => sensor.sensor_id,
+          :arduino => sensor.arduino_id,
+          :currentTemperature => sensor.current_temperature,
+          :targetTemperature => sensor.target_temperature,
+          :updatedAt => Firebase::ServerValue::TIMESTAMP
+        }
+        base_uri = Rails.application.secrets.FIREBASE_URL
+
+        Rails.logger.debug "url #{base_uri}"
+        firebase = Firebase::Client.new(base_uri)
+        response = firebase.set("sensors/#{sensor.arduino_id}-#{sensor.sensor_id}", payload)
+    end
+    end
 end
