@@ -29,7 +29,9 @@ class ArduinoController < ApplicationController
 
         Rails.logger.debug "url #{base_uri}"
         firebase = Firebase::Client.new(base_uri)
-        response = firebase.set("sensors/#{sensor.arduino_id}-#{sensor.sensor_id}", payload)
+        firebase_sensor_id = "#{sensor.arduino_id}-#{sensor.sensor_id}"
+        firebase.set("sensors/#{firebase_sensor_id}", payload)
+        firebase.push("sensors_history/#{firebase_sensor_id}", payload)
     end
     end
 end
