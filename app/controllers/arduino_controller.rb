@@ -1,7 +1,22 @@
 class ArduinoController < ApplicationController
 
-  def status
+  before_action :set_firebase
 
+  def settings
+    arduinoId = params[:arduino]
+    if arduinoId.nil?
+      render status: :not_found
+    end
+    response = @firebase.get("/sensors_config/#{arduinoId}")
+    body_items = []
+    response.body.each do |key, value|
+      body_items << "#{key}=#{value}"
+    end
+    body = "&#{body_items.join(',')}&"
+    render plain: body
+  end
+
+  def status
     sensors = []
     params[:sensors].each do | sensor_param |
       sensor = Sensor.new
@@ -28,10 +43,14 @@ class ArduinoController < ApplicationController
         base_uri = Rails.application.secrets.FIREBASE_URL
 
         Rails.logger.debug "url #{base_uri}"
-        firebase = Firebase::Client.new(base_uri)
+        @firebase = Firebase::Client.new(base_uri)
         firebase_sensor_id = "#{sensor.arduino_id}-#{sensor.sensor_id}"
-        firebase.set("sensors/#{firebase_sensor_id}", payload)
-        firebase.push("sensors_history/#{firebase_sensor_id}", payload)
+        @firebase.set("sensors/#{firebase_sensor_id}", payload)
+        @firebase.push("sensors_history/#{firebase_sensor_id}", payload)
+      end
     end
+
+    def set_firebase
+      @firebase = Firebase::Client.new(Rails.application.secrets.FIREBASE_URL)
     end
 end
